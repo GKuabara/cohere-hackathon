@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "cohere-hackathon"
+version = "0.1.0"
+description = "application developed for semcomp 26's hackathon"
+authors = ["gabrielvictorcf <gabrielvcf@outlook.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
