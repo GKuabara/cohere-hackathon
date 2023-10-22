@@ -83,6 +83,7 @@ def get_album():
     artist = args['artist']
     album = args['album']
 
+    context['song_descriptions'].clear()
     album = genius.search_album(album, artist)
     cover = album.cover_art_url
 
@@ -92,7 +93,6 @@ def get_album():
     album_prompt = album.generate_prompt()
     res = co.generate(prompt=album_prompt, model=MODEL, max_tokens=100)
     album_description = res.generations[0].text
-    # print(f"Album '{album.title}' description: {album_description}")
 
     context['album_description'] = album_description
     return {'title': album.title, 'description': album_description, 'cover': cover}
@@ -106,7 +106,7 @@ def get_song(artist, album, song_num):
     album = context['album']
     album_description = context['album_description']
 
-    if song_num >= len():
+    if song_num >= len(album.songs):
         return {}
 
     song = album.songs[song_num-1]

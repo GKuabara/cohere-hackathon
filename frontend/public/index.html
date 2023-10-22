@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -24,19 +23,42 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Unravel</title>
     <script>
       tailwind.config = {
         plugins: [
           require('flowbite/plugin')
         ],
         content: [
-          // ...
           'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
-        ]
+        ],
+        theme: {
+          extend: {
+            colors: {
+              "tokyo-cover": "#1a1b26",
+              "tokyo-background": "#24283b",
+              "tokyo-foreground": "#a9b1d6",
+              "tokyo-red": "#f7768e",
+              "tokyo-outline": "#c0caf5",
+              "tokyo-highlight": "#b4f9f8",
+              "tokyo-blue": "#7aa2f7"
+            }
+          },
+          animation: {
+            'spin-slow': 'spin 5s linear infinite',
+          }
+        },
+        safelist: ['spin-slow'],
       }
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+      }
+    </style>    
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
