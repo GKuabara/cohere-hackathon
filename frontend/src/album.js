@@ -41,7 +41,6 @@ export default function Album() {
     fetch(url)
       .then(res => res.json())
       .then(json => {
-        console.log(json)
         setEndReached(false);
         if (json.hasOwnProperty('endReached')) {
           setEndReached(true);
@@ -49,7 +48,8 @@ export default function Album() {
         
         setTitle(json.title);
         setDescription(json.description);
-        setLyrics(json.lyrics);
+        const newLyrics = json.lyrics.replaceAll(/\[Verse\s\d\]/g, "\n").replaceAll(/\[Chorus\s\d\]/g, "\n\n")
+        setLyrics(newLyrics);
         setSongNum(num);
       })
   }, [endReached]);
