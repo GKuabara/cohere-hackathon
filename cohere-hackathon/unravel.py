@@ -7,7 +7,8 @@ from pathlib import Path
 import cohere
 from lyricsgenius import Genius
 from dotenv import load_dotenv
-from flask import Flask, request, g, app
+from flask import Flask, request, app
+from flask_cors import CORS
 
 load_dotenv()
 
@@ -22,6 +23,7 @@ genius = Genius(GENIUS_API_KEY)
 
 # Application state
 app = Flask(__name__)
+CORS(app)
 context = {
     'album': None,              # Holds the album and song infos
     'album_description': None,  # Used to cache album description and pass it to songs
@@ -95,27 +97,33 @@ def get_album():
     context['album_description'] = album_description
     return {'title': album.title, 'description': album_description, 'cover': cover}
 
-@app.route('/song/<int:song_num>')
-def get_song(song_num):
+@app.route('/<artist>/<album>/<int:song_num>')
+def get_song(artist, album, song_num):
+    song_description = ""
     if 'song_descriptions' in context and song_num in context['song_descriptions']:
-        return {"song_description": context['song_descriptions'][song_num]}
+        song_description = context['song_descriptions'][song_num]
 
     album = context['album']
     album_description = context['album_description']
 
-    if song_num >= len(album.songs):
-        return {"end_reached": True}
+    if song_num >= len():
+        return {}
 
-    song = album.songs[song_num]
+    song = album.songs[song_num-1]
 
     song_prompt = song.generate_prompt(album.title, album_description)
-    res = co.generate(prompt=song_prompt, model=MODEL, max_tokens=100)
-
-    song_description = res.generations[0].text
-    # print(f"Song '{song.name}' descriptions: {song_description}")
+    if not song_description and len(song.lyrics) > 0:
+        res = co.generate(prompt=song_prompt, model=MODEL, max_tokens=100)
+        song_description = res.generations[0].text
+    elif len(song.lyrics) == 0:
+        song_description = "This song is instrumental."
 
     context['song_descriptions'][song_num] = song_description
-    return {'title': song.name, "description": song_description}
+
+    res = {'title': song.name, "description": song_description, "lyrics": song.lyrics}
+    if song_num+1 == len(album.songs): res["end_reached"] = True
+
+    return res
 
 def main():
     app.run()
